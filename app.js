@@ -22,21 +22,12 @@ const app = express();
 const server = http.createServer(app);
 const io = socket(server);
 
-io.set('origins', '*:*');
-// io.origins('*:*');
+io.origins('*:*');
 
 io.on('connection', (client) => {
+  /** assign client to room */
   client.on('join', (room) => {
-    console.log('client join to room', room);
     client.join(room);
-  });
-
-  client.on('message', (message) => {
-    io.to(message.room).emit('message', message);
-  });
-
-  client.on('disconnect', () => {
-    console.log('disconnect');
   });
 });
 
@@ -44,19 +35,16 @@ io.on('connection', (client) => {
 app.use(cors());
 app.use(express.json());
 
+/** Serve vue build */
 app.use(express.static('./client/dist'));
 
-app.get('/hello', (req, res) => {
-  res.json({
-    message: 'hello world',
-  });
-});
-
+/** API endpoint to get all messages by room */
 app.get('/messages', async (req, res) => {
   const messages = await Message.find({ room: req.query.room });
   res.json({ messages });
 });
 
+/** Insert and emit new message */
 app.post('/messages', async (req, res, next) => {
   try {
     const message = await Message.create(req.body);
@@ -69,7 +57,7 @@ app.post('/messages', async (req, res, next) => {
 
 /** error handler */
 app.use((err, req, res, next) => {
-  res.json({ err });
+  res.json({ error: err.message });
 });
 
 server.listen(PORT, () => {

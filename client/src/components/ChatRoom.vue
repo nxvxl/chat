@@ -36,7 +36,6 @@ export default {
     sendMessage() {
       if (!this.message) return;
       this.$store.dispatch('sendMessage', this.message);
-
       this.message = '';
     },
     scrollToBottom() {
@@ -52,7 +51,7 @@ export default {
     ...mapGetters(['getMessages']),
   },
   mounted() {
-    this.socket = io('http://localhost:8000');
+    this.socket = io(process.env.VUE_APP_SOCKETIO);
     this.socket.on('connect', () => {
       this.socket.emit('join', this.$store.state.room);
       this.$store.dispatch('fetchMessages');
@@ -60,8 +59,6 @@ export default {
     this.socket.on('message', (message) => {
       this.$store.commit('PUSH_MESSAGE', message);
     });
-    this.socket.on('disconnect', function() {});
-
     this.scrollToBottom();
   },
   updated() {
