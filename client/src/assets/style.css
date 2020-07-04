@@ -103,3 +103,8 @@ form button {
   color: white;
   cursor: pointer;
 }
+
+footer {
+  position: fixed;
+  bottom: 0;
+}
