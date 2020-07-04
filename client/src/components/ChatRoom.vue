@@ -1,6 +1,7 @@
 <template>
   <main class="chat-room">
     <h1>Chat Room {{ $store.state.room }}</h1>
+    <button class="btn-small" @click="logout()">logout</button>
     <div class="chat-box">
       <div
         class="chat-bubble"
@@ -12,7 +13,8 @@
       </div>
     </div>
     <form @submit.prevent="sendMessage()" class="chat-input">
-      <input type="text" />
+      <label>{{ $store.state.username }}</label>
+      <input type="text" v-model="message" />
       <button type="submit">Send</button>
     </form>
   </main>
@@ -22,8 +24,34 @@
 import { mapGetters } from 'vuex';
 export default {
   name: 'ChatRoom',
+  data() {
+    return {
+      message: '',
+    };
+  },
+  methods: {
+    sendMessage() {
+      this.$store.dispatch('sendMessage', this.message);
+      this.message = '';
+    },
+    scrollToBottom() {
+      const chatBox = this.$el.querySelector('.chat-box');
+      chatBox.scrollTop = chatBox.scrollHeight;
+    },
+    logout() {
+      this.$store.commit('SET_USERNAME', '');
+      this.$store.commit('SET_ROOM', '');
+      this.$router.push('/');
+    },
+  },
   computed: {
     ...mapGetters(['getMessages']),
+  },
+  mounted() {
+    this.scrollToBottom();
+  },
+  updated() {
+    this.scrollToBottom();
   },
 };
 </script>

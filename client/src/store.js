@@ -18,42 +18,6 @@ const store = new Vuex.Store({
         room: 'test',
         content: 'hello to you too',
       },
-      {
-        username: 'A',
-        room: 'test',
-        content: 'hello',
-      },
-      {
-        username: 'B',
-        room: 'test',
-        content: 'hello to you too',
-      },
-      {
-        username: 'A',
-        room: 'test',
-        content: 'hello',
-      },
-      {
-        username: 'B',
-        room: 'test',
-        content: 'hello to you too',
-      },
-      {
-        username: 'A',
-        room: 'test',
-        content: 'hello',
-      },
-      {
-        username: 'B',
-        room: 'test',
-        content: 'hello to you too',
-      },
-      {
-        username: 'C',
-        room: 'test',
-        content:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia quisquam voluptas laudantium, assumenda voluptatum quis facere eius itaque placeat dolorem id nemo? Repellendus adipisci inventore ex voluptatum sint, voluptas sunt?',
-      },
     ],
   },
   getters: {
@@ -67,6 +31,21 @@ const store = new Vuex.Store({
     },
     SET_ROOM: (state, room) => {
       state.room = room;
+    },
+    SET_MESSAGES: (state, messages) => {
+      state.messages = messages;
+    },
+    PUSH_MESSAGE: (state, message) => {
+      state.messages.push(message);
+    },
+  },
+  actions: {
+    sendMessage: ({ commit, state }, message) => {
+      commit('PUSH_MESSAGE', {
+        username: state.username,
+        room: state.room,
+        content: message,
+      });
     },
   },
 });

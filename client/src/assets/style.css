@@ -80,10 +80,25 @@ form button {
   margin-top: 0.4rem;
 }
 
+.chat-input label {
+  margin: 1rem;
+  font-weight: bold;
+}
+
 .chat-input input {
   flex-grow: 1;
 }
 
 .chat-input button {
   min-width: 30px;
+}
+
+.btn-small {
+  width: fit-content;
+  margin: -10px auto;
+  background: #2c3e50;
+  border: 1px solid#2c3e50;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
 }

@@ -5,6 +5,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const http = require('http');
+const socket = require('socket.io');
 
 const Message = require('./model');
 
@@ -49,6 +51,26 @@ app.use((err, req, res, next) => {
   res.json({ err });
 });
 
-app.listen(PORT, () => {
+const server = http.createServer(app);
+const io = socket(server);
+
+io.set('origins', '*:*');
+io.origins('*:*');
+
+io.on('connection', (client) => {
+  client.send('hello stranger');
+  client.on('join', (room) => {
+    client.join(room);
+    console.log(room);
+  });
+  client.on('message', (message) => {
+    io.to('room test').emit('message', message);
+  });
+  client.on('disconnect', () => {
+    console.log('disconnect');
+  });
+});
+
+server.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
 });
