@@ -54,10 +54,10 @@ export default {
   mounted() {
     this.socket = io('http://localhost:8000');
     this.socket.on('connect', () => {
+      this.socket.emit('join', this.$store.state.room);
       this.$store.dispatch('fetchMessages');
     });
     this.socket.on('message', (message) => {
-      console.log('message', message);
       this.$store.commit('PUSH_MESSAGE', message);
     });
     this.socket.on('disconnect', function() {});

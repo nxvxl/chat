@@ -26,7 +26,7 @@ const store = new Vuex.Store({
       state.messages = messages;
     },
     PUSH_MESSAGE: (state, message) => {
-      if (message.room == state.room) state.messages.push(message);
+      state.messages.push(message);
     },
     RESET: (state) => {
       (state.messages = ''), (state.room = ''), (state.messages = []);

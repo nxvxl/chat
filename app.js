@@ -60,7 +60,7 @@ app.get('/messages', async (req, res) => {
 app.post('/messages', async (req, res, next) => {
   try {
     const message = await Message.create(req.body);
-    io.emit('message', message);
+    io.to(message.room).emit('message', message);
     res.json({ message });
   } catch (error) {
     next(error);
