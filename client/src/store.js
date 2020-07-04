@@ -1,24 +1,14 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import axios from 'axios';
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    username: 'user',
-    room: 'test',
-    messages: [
-      {
-        username: 'A',
-        room: 'test',
-        content: 'hello',
-      },
-      {
-        username: 'B',
-        room: 'test',
-        content: 'hello to you too',
-      },
-    ],
+    username: '',
+    room: '',
+    messages: [],
   },
   getters: {
     getMessages: (state) => {
@@ -36,16 +26,26 @@ const store = new Vuex.Store({
       state.messages = messages;
     },
     PUSH_MESSAGE: (state, message) => {
-      state.messages.push(message);
+      if (message.room == state.room) state.messages.push(message);
+    },
+    RESET: (state) => {
+      (state.messages = ''), (state.room = ''), (state.messages = []);
     },
   },
   actions: {
-    sendMessage: ({ commit, state }, message) => {
-      commit('PUSH_MESSAGE', {
-        username: state.username,
-        room: state.room,
-        content: message,
-      });
+    fetchMessages: ({ commit, state }) => {
+      axios
+        .get(`http://localhost:8000/messages?room=${state.room}`)
+        .then((res) => commit('SET_MESSAGES', res.data.messages));
+    },
+    sendMessage: ({ state }, message) => {
+      axios
+        .post('http://localhost:8000/messages', {
+          username: state.username,
+          room: state.room,
+          content: message,
+        })
+        .catch(console.error);
     },
   },
 });

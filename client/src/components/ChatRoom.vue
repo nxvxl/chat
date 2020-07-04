@@ -22,16 +22,21 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import io from 'socket.io-client';
+
 export default {
   name: 'ChatRoom',
   data() {
     return {
       message: '',
+      socket: null,
     };
   },
   methods: {
     sendMessage() {
+      if (!this.message) return;
       this.$store.dispatch('sendMessage', this.message);
+
       this.message = '';
     },
     scrollToBottom() {
@@ -39,8 +44,7 @@ export default {
       chatBox.scrollTop = chatBox.scrollHeight;
     },
     logout() {
-      this.$store.commit('SET_USERNAME', '');
-      this.$store.commit('SET_ROOM', '');
+      this.$store.commit('RESET');
       this.$router.push('/');
     },
   },
@@ -48,10 +52,23 @@ export default {
     ...mapGetters(['getMessages']),
   },
   mounted() {
+    this.socket = io('http://localhost:8000');
+    this.socket.on('connect', () => {
+      this.$store.dispatch('fetchMessages');
+    });
+    this.socket.on('message', (message) => {
+      console.log('message', message);
+      this.$store.commit('PUSH_MESSAGE', message);
+    });
+    this.socket.on('disconnect', function() {});
+
     this.scrollToBottom();
   },
   updated() {
     this.scrollToBottom();
+  },
+  destroyed() {
+    this.socket.disconnect();
   },
 };
 </script>

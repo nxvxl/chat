@@ -95,6 +95,7 @@ form button {
 
 .btn-small {
   width: fit-content;
+  padding: 0.2rem;
   margin: -10px auto;
   background: #2c3e50;
   border: 1px solid#2c3e50;

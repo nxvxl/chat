@@ -19,6 +19,26 @@ mongoose.connect(process.env.MONGO_URI, {
 
 /** create express object  */
 const app = express();
+const server = http.createServer(app);
+const io = socket(server);
+
+io.set('origins', '*:*');
+// io.origins('*:*');
+
+io.on('connection', (client) => {
+  client.on('join', (room) => {
+    console.log('client join to room', room);
+    client.join(room);
+  });
+
+  client.on('message', (message) => {
+    io.to(message.room).emit('message', message);
+  });
+
+  client.on('disconnect', () => {
+    console.log('disconnect');
+  });
+});
 
 /** middleware */
 app.use(cors());
@@ -33,13 +53,14 @@ app.get('/hello', (req, res) => {
 });
 
 app.get('/messages', async (req, res) => {
-  const messages = await Message.find();
+  const messages = await Message.find({ room: req.query.room });
   res.json({ messages });
 });
 
 app.post('/messages', async (req, res, next) => {
   try {
     const message = await Message.create(req.body);
+    io.emit('message', message);
     res.json({ message });
   } catch (error) {
     next(error);
@@ -49,26 +70,6 @@ app.post('/messages', async (req, res, next) => {
 /** error handler */
 app.use((err, req, res, next) => {
   res.json({ err });
-});
-
-const server = http.createServer(app);
-const io = socket(server);
-
-io.set('origins', '*:*');
-io.origins('*:*');
-
-io.on('connection', (client) => {
-  client.send('hello stranger');
-  client.on('join', (room) => {
-    client.join(room);
-    console.log(room);
-  });
-  client.on('message', (message) => {
-    io.to('room test').emit('message', message);
-  });
-  client.on('disconnect', () => {
-    console.log('disconnect');
-  });
 });
 
 server.listen(PORT, () => {
