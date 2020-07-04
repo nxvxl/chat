@@ -36,7 +36,7 @@ app.use(cors());
 app.use(express.json());
 
 /** Serve vue build */
-app.use(express.static('./client/dist'));
+app.use(express.static('./dist'));
 
 /** API endpoint to get all messages by room */
 app.get('/messages', async (req, res) => {
