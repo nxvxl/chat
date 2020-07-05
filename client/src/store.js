@@ -35,13 +35,13 @@ const store = new Vuex.Store({
   actions: {
     fetchMessages: ({ commit, state }) => {
       axios
-        .get(`${process.env.VUE_APP_BASE_API}/messages?room=${state.room}`)
+        .get(`${process.env.VUE_APP_BASE_API}/api/messages?room=${state.room}`)
         .then((res) => commit('SET_MESSAGES', res.data.messages))
         .catch(console.error);
     },
     sendMessage: ({ state }, message) => {
       axios
-        .post(`${process.env.VUE_APP_BASE_API}/messages`, {
+        .post(`${process.env.VUE_APP_BASE_API}/api/messages`, {
           username: state.username,
           room: state.room,
           content: message,
