@@ -1,16 +1,29 @@
 <template>
   <main class="chat-room">
     <h1>Chat Room {{ $store.state.room }}</h1>
-    <button class="btn-small" @click="logout()">logout</button>
+    <nav class="topnav">
+      <span class="online-users"
+        >{{ $store.state.onlineUsers }} Online User</span
+      >
+      <button class="btn-small" @click="logout()">logout</button>
+    </nav>
     <div class="chat-box">
       <div
-        class="chat-bubble"
+        class="chat-bubble-wrapper"
         v-for="(message, index) in getMessages"
-        :class="{ sender: message.sessionId == $store.state.sessionId }"
         :key="index"
       >
-        <h5 class="chat-username">{{ message.username }}</h5>
-        <p class="chat-content">{{ message.content }}</p>
+        <div v-if="message.type == 'notification'" class="chat-notification">
+          {{ message.message }}
+        </div>
+        <div
+          v-else
+          class="chat-bubble"
+          :class="{ sender: message.sessionId == $store.state.sessionId }"
+        >
+          <h5 class="chat-username">{{ message.username }}</h5>
+          <p class="chat-content">{{ message.content }}</p>
+        </div>
       </div>
     </div>
     <form @submit.prevent="sendMessage()" class="chat-input">
@@ -46,7 +59,6 @@ export default {
       chatBox.scrollTop = chatBox.scrollHeight;
     },
     logout() {
-      this.$store.commit('RESET');
       this.$router.push('/');
     },
   },
@@ -56,8 +68,14 @@ export default {
   mounted() {
     this.socket = io(process.env.VUE_APP_SOCKETIO);
     this.socket.on('connect', () => {
-      this.socket.emit('join', this.$store.state.room);
+      this.socket.emit('join', {
+        room: this.$store.state.room,
+        username: this.$store.state.username,
+      });
       this.$store.dispatch('fetchMessages');
+    });
+    this.socket.on('notification', (message) => {
+      this.$store.dispatch('pushNotification', message);
     });
     this.socket.on('message', (message) => {
       this.$refs.notification.currentTime = 0;
@@ -70,7 +88,12 @@ export default {
     this.scrollToBottom();
   },
   destroyed() {
+    this.socket.emit('leave', {
+      room: this.$store.state.room,
+      username: this.$store.state.username,
+    });
     this.socket.disconnect();
+    this.$store.commit('RESET');
   },
 };
 </script>

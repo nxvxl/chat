@@ -10,6 +10,7 @@ const store = new Vuex.Store({
     username: '',
     room: '',
     messages: [],
+    onlineUsers: 0,
   },
   getters: {
     getMessages: (state) => {
@@ -35,6 +36,9 @@ const store = new Vuex.Store({
     RESET: (state) => {
       (state.messages = ''), (state.room = ''), (state.messages = []);
     },
+    SET_ONLINE_USERS: (state, onlineUsers) => {
+      state.onlineUsers = onlineUsers;
+    },
   },
   actions: {
     fetchMessages: ({ commit, state }) => {
@@ -52,6 +56,10 @@ const store = new Vuex.Store({
           content: message,
         })
         .catch(console.log);
+    },
+    pushNotification: ({ commit }, data) => {
+      commit('PUSH_MESSAGE', data);
+      commit('SET_ONLINE_USERS', data.onlineUsers);
     },
   },
 });

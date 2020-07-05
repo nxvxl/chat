@@ -25,10 +25,21 @@ app.use((err, req, res, next) => {
 });
 
 io.on('connection', (client) => {
-  console.log('connect');
   /** assign client to room */
-  client.on('join', (room) => {
+  client.on('join', ({ room, username }) => {
     client.join(room);
+    io.to(room).emit('notification', {
+      type: 'notification',
+      message: `${username} joined the room`,
+      onlineUsers: io.sockets.adapter.rooms[room].length,
+    });
+  });
+  client.on('leave', ({ room, username }) => {
+    io.to(room).emit('notification', {
+      type: 'notification',
+      message: `${username} left`,
+      onlineUsers: io.sockets.adapter.rooms[room].length,
+    });
   });
 });
 
