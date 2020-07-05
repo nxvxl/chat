@@ -23,8 +23,12 @@ export default {
   }),
   methods: {
     handleSubmit() {
+      const sessionId = Math.random()
+        .toString(36)
+        .substring(2);
       this.$store.commit('SET_USERNAME', this.username);
       this.$store.commit('SET_ROOM', this.room);
+      this.$store.commit('SET_SESSION_ID', sessionId);
       this.$router.push('/room');
     },
   },

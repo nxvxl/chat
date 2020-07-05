@@ -6,6 +6,7 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
+    sessionId: '',
     username: '',
     room: '',
     messages: [],
@@ -16,6 +17,9 @@ const store = new Vuex.Store({
     },
   },
   mutations: {
+    SET_SESSION_ID: (state, sessionId) => {
+      state.sessionId = sessionId;
+    },
     SET_USERNAME: (state, username) => {
       state.username = username;
     },
@@ -42,11 +46,12 @@ const store = new Vuex.Store({
     sendMessage: ({ state }, message) => {
       axios
         .post(`${process.env.VUE_APP_BASE_API}/api/messages`, {
+          sessionId: state.sessionId,
           username: state.username,
           room: state.room,
           content: message,
         })
-        .catch(console.error);
+        .catch(console.log);
     },
   },
 });

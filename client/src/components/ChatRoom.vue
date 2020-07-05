@@ -6,7 +6,7 @@
       <div
         class="chat-bubble"
         v-for="(message, index) in getMessages"
-        :class="{ sender: message.username == $store.state.username }"
+        :class="{ sender: message.sessionId == $store.state.sessionId }"
         :key="index"
       >
         <h5 class="chat-username">{{ message.username }}</h5>
