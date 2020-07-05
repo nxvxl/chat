@@ -17,6 +17,7 @@
       <input type="text" v-model="message" />
       <button type="submit">Send</button>
     </form>
+    <audio src="@/assets/pristine.ogg" ref="notification"></audio>
   </main>
 </template>
 
@@ -57,6 +58,8 @@ export default {
       this.$store.dispatch('fetchMessages');
     });
     this.socket.on('message', (message) => {
+      this.$refs.notification.currentTime = 0;
+      this.$refs.notification.play();
       this.$store.commit('PUSH_MESSAGE', message);
     });
     this.scrollToBottom();
