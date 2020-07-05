@@ -118,16 +118,19 @@ form button {
   margin-bottom: 10px;
 }
 
-.btn-small {
+.btn-logout {
   width: fit-content;
   padding: 0.2rem;
-  background: #2c3e50;
-  border: 1px solid#2c3e50;
+  background-color: rgb(194, 42, 42);
+  border: 2px solid rgb(194, 42, 42);
   border-radius: 3px;
   color: white;
   cursor: pointer;
 }
 
+.btn-logout:hover {
+  opacity: 0.8;
+}
 .online-users {
   font-size: 0.9rem;
   font-weight: 500;

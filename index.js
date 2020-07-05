@@ -28,17 +28,26 @@ io.on('connection', (client) => {
   /** assign client to room */
   client.on('join', ({ room, username }) => {
     client.join(room);
+    const roomMembers = io.sockets.adapter.rooms[room]
+      ? io.sockets.adapter.rooms[room].length
+      : 0;
     io.to(room).emit('notification', {
       type: 'notification',
       message: `${username} joined the room`,
-      onlineUsers: io.sockets.adapter.rooms[room].length,
+      onlineUsers: roomMembers,
     });
   });
   client.on('leave', ({ room, username }) => {
+    client.disconnect();
+    const roomMembers = io.sockets.adapter.rooms[room]
+      ? io.sockets.adapter.rooms[room].length
+      : 0;
     io.to(room).emit('notification', {
       type: 'notification',
       message: `${username} left`,
-      onlineUsers: io.sockets.adapter.rooms[room].length,
+      onlineUsers: io.sockets.adapter.rooms[room]
+        ? io.sockets.adapter.rooms[room].length
+        : 0,
     });
   });
 });

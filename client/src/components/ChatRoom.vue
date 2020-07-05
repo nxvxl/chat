@@ -3,9 +3,11 @@
     <h1>Chat Room {{ $store.state.room }}</h1>
     <nav class="topnav">
       <span class="online-users"
-        >{{ $store.state.onlineUsers }} Online User</span
+        >{{ $store.state.onlineUsers }} Online User{{
+          $store.state.onlineUsers > 1 ? 's' : ''
+        }}</span
       >
-      <button class="btn-small" @click="logout()">logout</button>
+      <button class="btn-logout" @click="logout()">logout</button>
     </nav>
     <div class="chat-box">
       <div
@@ -29,7 +31,7 @@
     <form @submit.prevent="sendMessage()" class="chat-input">
       <label>{{ $store.state.username }}</label>
       <input type="text" v-model="message" />
-      <button type="submit">Send</button>
+      <button type="submit" class="btn-send">Send</button>
     </form>
     <audio src="@/assets/pristine.ogg" ref="notification"></audio>
   </main>
@@ -78,9 +80,10 @@ export default {
       this.$store.dispatch('pushNotification', message);
     });
     this.socket.on('message', (message) => {
+      this.$store.commit('PUSH_MESSAGE', message);
+      if (message.username == this.$store.state.username) return;
       this.$refs.notification.currentTime = 0;
       this.$refs.notification.play();
-      this.$store.commit('PUSH_MESSAGE', message);
     });
     this.scrollToBottom();
   },
@@ -92,7 +95,6 @@ export default {
       room: this.$store.state.room,
       username: this.$store.state.username,
     });
-    this.socket.disconnect();
     this.$store.commit('RESET');
   },
 };

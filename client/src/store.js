@@ -34,7 +34,7 @@ const store = new Vuex.Store({
       state.messages.push(message);
     },
     RESET: (state) => {
-      (state.messages = ''), (state.room = ''), (state.messages = []);
+      (state.username = ''), (state.room = ''), (state.messages = []);
     },
     SET_ONLINE_USERS: (state, onlineUsers) => {
       state.onlineUsers = onlineUsers;
