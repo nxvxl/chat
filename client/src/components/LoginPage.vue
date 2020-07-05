@@ -3,11 +3,11 @@
     <h1>Login</h1>
     <form @submit.prevent="handleSubmit()">
       <div class="form-control">
-        <label for>Username</label>
+        <label>Username</label>
         <input type="text" v-model="username" required />
       </div>
       <div class="form-control">
-        <label for>Room</label>
+        <label>Room</label>
         <input type="text" v-model="room" required />
       </div>
       <button type="submit" class="btn-block">Join</button>
