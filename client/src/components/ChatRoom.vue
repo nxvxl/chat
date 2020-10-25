@@ -1,6 +1,6 @@
 <template>
   <main class="chat-room">
-    <h1>Chat Room {{ $store.state.room }}</h1>
+    <h1 class="room-name">{{ $store.state.room }}</h1>
     <nav class="topnav">
       <span class="online-users"
         >{{ $store.state.onlineUsers }} Online User{{
@@ -9,7 +9,7 @@
       >
       <button class="btn-logout" @click="logout()">logout</button>
     </nav>
-    <div class="chat-box">
+   <div class="chat-box">
       <div
         class="chat-bubble-wrapper"
         v-for="(message, index) in getMessages"
@@ -30,7 +30,7 @@
     </div>
     <form @submit.prevent="sendMessage()" class="chat-input">
       <label>{{ $store.state.username }}</label>
-      <input type="text" v-model="message" />
+      <input v-model="message" />
       <button type="submit" class="btn-send">Send</button>
     </form>
     <audio src="@/assets/pristine.ogg" ref="notification"></audio>

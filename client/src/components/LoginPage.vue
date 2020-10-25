@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="login-container">
     <h1>Login</h1>
     <form @submit.prevent="handleSubmit()">
       <div class="form-control">

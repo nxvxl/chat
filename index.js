@@ -45,9 +45,7 @@ io.on('connection', (client) => {
     io.to(room).emit('notification', {
       type: 'notification',
       message: `${username} left`,
-      onlineUsers: io.sockets.adapter.rooms[room]
-        ? io.sockets.adapter.rooms[room].length
-        : 0,
+      onlineUsers: roomMembers,
     });
   });
 });
